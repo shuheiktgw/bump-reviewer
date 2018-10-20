@@ -1,0 +1,12 @@
+version: 2
+jobs:
+  build:
+    docker:
+    - image: circleci/golang:1.11.1
+
+    working_directory: /go/src/github.com/shuheiktgw/bump-reviewer
+    steps:
+    - checkout
+
+    - run: dep ensure
+    - run: go test -v ./...
