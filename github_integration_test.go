@@ -24,3 +24,19 @@ func TestGitHubClient_Integration_CompareCommits(t *testing.T) {
 		t.Fatalf("GitHubClient.CompareCommits returns unexpected file: want: %s, got: %s", want, got)
 	}
 }
+
+func TestGitHubClient_Integration_GetLatestRelease(t *testing.T) {
+	rr, err := integrationGitHubClient.GetLatestRelease()
+
+	if err != nil {
+		t.Fatalf("GitHubClient.GetLatestRelease returns unexpected error: %s", err)
+	}
+
+	if got, want := *rr.TagName, "v0.0.1"; got != want {
+		t.Fatalf("GitHubClient.GetLatestRelease returns unexpected TagName: want: %s, got: %s", want, got)
+	}
+
+	if got, want := *rr.Name, "Release v0.0.1"; got != want {
+		t.Fatalf("GitHubClient.GetLatestRelease returns unexpected Name: want: %s, got: %s", want, got)
+	}
+}

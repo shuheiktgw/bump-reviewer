@@ -40,8 +40,23 @@ func (c *GitHubClient) CompareCommits(base, head string) (*github.CommitsCompari
 	}
 
 	if res.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("github#CompareCommits returns invalid status: %s", res.Status)
+		return nil, fmt.Errorf("Repositories.CompareCommits returns invalid status: %s", res.Status)
 	}
 
 	return cc, nil
+}
+
+// GetLatestRelease gets the latest release of the repository
+func (c *GitHubClient) GetLatestRelease() (*github.RepositoryRelease, error) {
+	rr, res, err := c.Client.Repositories.GetLatestRelease(context.TODO(), c.Owner, c.Repo)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("Repositories.GetLatestRelease returns invalid status: %s", res.Status)
+	}
+
+	return rr, nil
 }
