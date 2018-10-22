@@ -51,3 +51,28 @@ func TestGitHubClient_GetLatestRelease(t *testing.T) {
 		t.Errorf("GitHubClient.GetLatestRelease returned %+v, want %+v", rr, want)
 	}
 }
+
+func TestGitHubClient_GetContent(t *testing.T) {
+	client, mux, _, tearDown := setup()
+	defer tearDown()
+
+	path := "version.rb"
+	u := fmt.Sprintf("/repos/%s/%s/contents/%s", testGitHubOwner, testGitHubRepo, path)
+
+	mux.HandleFunc(u, func(w http.ResponseWriter, r *http.Request) {
+		testFormValues(t, r, values{"ref": "develop"})
+		testMethod(t, r, http.MethodGet)
+		fmt.Fprint(w, `{"name":"version.rb"}`)
+	})
+
+	opt := github.RepositoryContentGetOptions{Ref: "develop"}
+	fc, _, err := client.GetContent(path, &opt)
+	if err != nil {
+		t.Fatalf("GitHubClient.GetContent returned unexpected error: %v", err)
+	}
+
+	want := &github.RepositoryContent{Name: github.String("version.rb")}
+	if !reflect.DeepEqual(fc, want) {
+		t.Errorf("GitHubClient.GetContent returned %+v, want %+v", fc, want)
+	}
+}

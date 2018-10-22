@@ -60,3 +60,18 @@ func (c *GitHubClient) GetLatestRelease() (*github.RepositoryRelease, error) {
 
 	return rr, nil
 }
+
+// GetContent gets the specified file
+func (c *GitHubClient) GetContent(path string, opt *github.RepositoryContentGetOptions) (*github.RepositoryContent, []*github.RepositoryContent, error) {
+	fc, dc, res, err := c.Client.Repositories.GetContents(context.TODO(), c.Owner, c.Repo, path, opt)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return nil, nil, fmt.Errorf("Repositories.GetContents returns invalid status: %s", res.Status)
+	}
+
+	return fc, dc, nil
+}

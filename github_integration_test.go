@@ -3,7 +3,10 @@
 package main
 
 import (
+	"fmt"
 	"testing"
+
+	"github.com/google/go-github/github"
 )
 
 func TestGitHubClient_Integration_CompareCommits(t *testing.T) {
@@ -38,5 +41,19 @@ func TestGitHubClient_Integration_GetLatestRelease(t *testing.T) {
 
 	if got, want := *rr.Name, "Release v0.0.1"; got != want {
 		t.Fatalf("GitHubClient.GetLatestRelease returns unexpected Name: want: %s, got: %s", want, got)
+	}
+}
+
+func TestGitHubClient_Integration_GetContent(t *testing.T) {
+	path := fmt.Sprintf("lib/%s/version.rb", integrationGitHubRepo)
+	opt := github.RepositoryContentGetOptions{Ref: "pull/1/head"}
+	fc, _, err := integrationGitHubClient.GetContent(path, &opt)
+
+	if err != nil {
+		t.Fatalf("GitHubClient.GetContent returns unexpected error: %s", err)
+	}
+
+	if got, want := *fc.Name, "version.rb"; got != want {
+		t.Fatalf("GitHubClient.GetContent returns unexpected Name: want: %s, got: %s", want, got)
 	}
 }
