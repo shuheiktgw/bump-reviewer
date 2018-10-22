@@ -9,6 +9,11 @@ import (
 	"golang.org/x/oauth2"
 )
 
+const (
+	ReviewApprove = "approve"
+	ReviewDismiss = "dismiss"
+)
+
 // GitHubClient is a clint to interact with Github API
 type GitHubClient struct {
 	Owner, Repo string
@@ -46,6 +51,21 @@ func (c *GitHubClient) CompareCommits(base, head string) (*github.CommitsCompari
 	return cc, nil
 }
 
+// GetPullRequestFiles gets files edited by a PR
+func (c *GitHubClient) ListPullRequestsFiles(number int, opt *github.ListOptions) ([]*github.CommitFile, error) {
+	cf, res, err := c.Client.PullRequests.ListFiles(context.TODO(), c.Owner, c.Repo, number, opt)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("PullRequests.ListFiles returns invalid status: %s", res.Status)
+	}
+
+	return cf, nil
+}
+
 // GetLatestRelease gets the latest release of the repository
 func (c *GitHubClient) GetLatestRelease() (*github.RepositoryRelease, error) {
 	rr, res, err := c.Client.Repositories.GetLatestRelease(context.TODO(), c.Owner, c.Repo)
@@ -74,4 +94,19 @@ func (c *GitHubClient) GetContent(path string, opt *github.RepositoryContentGetO
 	}
 
 	return fc, dc, nil
+}
+
+// CreateReview creates a review on a given PR
+func (c *GitHubClient) CreateReview(number int, review *github.PullRequestReviewRequest) (*github.PullRequestReview, error) {
+	prr, res, err := c.Client.PullRequests.CreateReview(context.TODO(), c.Owner, c.Repo, number, review)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode != http.StatusCreated {
+		return nil, fmt.Errorf("PullRequests.CreateReview returns invalid status: %s", res.Status)
+	}
+
+	return prr, nil
 }

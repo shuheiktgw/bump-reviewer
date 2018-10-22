@@ -28,6 +28,22 @@ func TestGitHubClient_Integration_CompareCommits(t *testing.T) {
 	}
 }
 
+func TestGitHubClient_Integration_ListPullRequestsFiles(t *testing.T) {
+	cf, err := integrationGitHubClient.ListPullRequestsFiles(1, nil)
+
+	if err != nil {
+		t.Fatalf("GitHubClient.ListPullRequestsFiles returns unexpected error: %s", err)
+	}
+
+	if got, want := len(cf), 1; got != want {
+		t.Fatalf("GitHubClient.ListPullRequestsFiles returns unexpected number of files: want: %d, got: %d", want, got)
+	}
+
+	if got, want := *cf[0].Filename, "lib/bump-reviewer-test/version.rb"; got != want {
+		t.Fatalf("GitHubClient.CompareCommits returns unexpected file: want: %s, got: %s", want, got)
+	}
+}
+
 func TestGitHubClient_Integration_GetLatestRelease(t *testing.T) {
 	rr, err := integrationGitHubClient.GetLatestRelease()
 

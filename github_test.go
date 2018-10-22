@@ -32,6 +32,28 @@ func TestGitHubClient_CompareCommits(t *testing.T) {
 	}
 }
 
+func TestGitHubClient_ListPullRequestsFiles(t *testing.T) {
+	client, mux, _, tearDown := setup()
+	defer tearDown()
+
+	number := 1
+
+	mux.HandleFunc(fmt.Sprintf("/repos/%v/%v/pulls/%d/files", testGitHubOwner, testGitHubRepo, number), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, http.MethodGet)
+		fmt.Fprint(w, `[{"filename":"version.rb"}]`)
+	})
+
+	cc, err := client.ListPullRequestsFiles(number, nil)
+	if err != nil {
+		t.Fatalf("GitHubClient.ListPullRequestsFiles returned unexpected error: %v", err)
+	}
+
+	want := []*github.CommitFile{{Filename: github.String("version.rb")}}
+	if !reflect.DeepEqual(cc, want) {
+		t.Errorf("GitHubClient.ListPullRequestsFiles returned %+v, want %+v", cc, want)
+	}
+}
+
 func TestGitHubClient_GetLatestRelease(t *testing.T) {
 	client, mux, _, tearDown := setup()
 	defer tearDown()
