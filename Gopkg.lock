@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/blang/semver"
+  packages = ["."]
+  revision = "2ee87856327ba09384cabd113bc6b5d174e9ec0f"
+  version = "v3.5.1"
+
+[[projects]]
   name = "github.com/golang/protobuf"
   packages = ["proto"]
   revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
@@ -18,6 +24,12 @@
   packages = ["query"]
   revision = "44c6ddd0a2342c386950e880b658017258da92fc"
   version = "v1.0.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/iancoleman/strcase"
+  packages = ["."]
+  revision = "3605ed457bf7f8caa1371b4fafadadc026673479"
 
 [[projects]]
   branch = "master"
@@ -54,6 +66,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4300090d6457f26397d5d50caf95d340a2c66eb9a5f91e8d3360348630b030e1"
+  inputs-digest = "e0455d53b496d5126a575a7a96863ffb3ce1a094ae1d571fb2f8d6622003cad2"
   solver-name = "gps-cdcl"
   solver-version = 1
