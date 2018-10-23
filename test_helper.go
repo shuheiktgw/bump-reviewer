@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -53,5 +54,15 @@ func testFormValues(t *testing.T, r *http.Request, values values) {
 	r.ParseForm()
 	if got := r.Form; !reflect.DeepEqual(got, want) {
 		t.Errorf("Request parameters: %v, want %v", got, want)
+	}
+}
+
+func testBody(t *testing.T, r *http.Request, want string) {
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		t.Errorf("Error reading request body: %v", err)
+	}
+	if got := string(b); got != want {
+		t.Errorf("request Body is %s, want %s", got, want)
 	}
 }

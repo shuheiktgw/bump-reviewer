@@ -10,8 +10,10 @@ import (
 )
 
 const (
-	ReviewApprove = "approve"
-	ReviewDismiss = "dismiss"
+	ReviewApprove       = "APPROVE"
+	ReviewRequestChange = "REQUEST_CHANGES"
+	ReviewComment       = "COMMENT"
+	ReviewPending       = "PENDING"
 )
 
 // GitHubClient is a clint to interact with Github API
@@ -104,7 +106,7 @@ func (c *GitHubClient) CreateReview(number int, review *github.PullRequestReview
 		return nil, err
 	}
 
-	if res.StatusCode != http.StatusCreated {
+	if res.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("PullRequests.CreateReview returns invalid status: %s", res.Status)
 	}
 

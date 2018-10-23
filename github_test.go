@@ -98,3 +98,28 @@ func TestGitHubClient_GetContent(t *testing.T) {
 		t.Errorf("GitHubClient.GetContent returned %+v, want %+v", fc, want)
 	}
 }
+
+func TestGitHubClient_CreateReview(t *testing.T) {
+	client, mux, _, tearDown := setup()
+	defer tearDown()
+
+	number := 3
+	u := fmt.Sprintf("/repos/%v/%v/pulls/%d/reviews", testGitHubOwner, testGitHubRepo, number)
+
+	mux.HandleFunc(u, func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, http.MethodPost)
+		testBody(t, r, `{"body":"LGTM","event":"APPROVE"}`+"\n")
+		fmt.Fprint(w, `{"state":"APPROVE"}`)
+	})
+
+	review := github.PullRequestReviewRequest{Event: github.String(ReviewApprove), Body: github.String("LGTM")}
+	prr, err := client.CreateReview(number, &review)
+	if err != nil {
+		t.Fatalf("GitHubClient.PullRequestReviewRequest returned unexpected error: %v", err)
+	}
+
+	want := &github.PullRequestReview{State: github.String(ReviewApprove)}
+	if !reflect.DeepEqual(prr, want) {
+		t.Errorf("GitHubClient.PullRequestReviewRequest returned %+v, want %+v", prr, want)
+	}
+}

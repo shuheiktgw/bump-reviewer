@@ -73,3 +73,18 @@ func TestGitHubClient_Integration_GetContent(t *testing.T) {
 		t.Fatalf("GitHubClient.GetContent returns unexpected Name: want: %s, got: %s", want, got)
 	}
 }
+
+func TestGitHubClient_Integration_CreateReview(t *testing.T) {
+	number := 3
+	review := github.PullRequestReviewRequest{Body: github.String("LGTM"), Event: github.String(ReviewApprove)}
+
+	prr, err := integrationGitHubClient.CreateReview(number, &review)
+
+	if err != nil {
+		t.Fatalf("GitHubClient.CreateReview returns unexpected error: %s", err)
+	}
+
+	if got, want := *prr.State, ReviewApprove; got != want {
+		t.Fatalf("GitHubClient.CreateReview returns unexpected status: want: %s, got %s", want, got)
+	}
+}
