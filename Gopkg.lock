@@ -8,6 +8,12 @@
   version = "v3.5.1"
 
 [[projects]]
+  name = "github.com/fatih/color"
+  packages = ["."]
+  revision = "5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4"
+  version = "v1.7.0"
+
+[[projects]]
   name = "github.com/golang/protobuf"
   packages = ["proto"]
   revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
@@ -26,17 +32,43 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "github.com/hashicorp/go-version"
+  packages = ["."]
+  revision = "b5a281d3160aa11950a6182bd9a9dc2cb1e02d50"
+  version = "v1.0.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/iancoleman/strcase"
   packages = ["."]
   revision = "3605ed457bf7f8caa1371b4fafadadc026673479"
 
 [[projects]]
+  name = "github.com/mattn/go-colorable"
+  packages = ["."]
+  revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
+  version = "v0.0.9"
+
+[[projects]]
+  name = "github.com/mattn/go-isatty"
+  packages = ["."]
+  revision = "6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c"
+  version = "v0.0.4"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/tcnksm/go-latest"
+  packages = ["."]
+  revision = "e3007ae9052ed85144087e7392e4c3fbc07962fa"
+
+[[projects]]
   branch = "master"
   name = "golang.org/x/net"
   packages = [
     "context",
-    "context/ctxhttp"
+    "context/ctxhttp",
+    "html",
+    "html/atom"
   ]
   revision = "04a2e542c03f1d053ab3e4d6e5abcd4b66e2be8e"
 
@@ -48,6 +80,12 @@
     "internal"
   ]
   revision = "9dcd33a902f40452422c2367fefcb95b54f9f8f8"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/sys"
+  packages = ["unix"]
+  revision = "5cd93ef61a7c8f0f858690154eb6de2e69415fa1"
 
 [[projects]]
   name = "google.golang.org/appengine"
@@ -66,6 +104,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e0455d53b496d5126a575a7a96863ffb3ce1a094ae1d571fb2f8d6622003cad2"
+  inputs-digest = "5d948839b682db56c49c27b592a9ce5d93357561511b45faaa296c502dc8287a"
   solver-name = "gps-cdcl"
   solver-version = 1
