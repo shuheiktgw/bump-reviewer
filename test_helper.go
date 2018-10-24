@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/base64"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -65,4 +67,40 @@ func testBody(t *testing.T, r *http.Request, want string) {
 	if got := string(b); got != want {
 		t.Errorf("request Body is %s, want %s", got, want)
 	}
+}
+
+func setupReviewer() (reviewer *Reviewer, mux *http.ServeMux, url string, tearDown func()) {
+	client, mux, url, tearDown := setup()
+	return &Reviewer{client}, mux, url, tearDown
+}
+
+func setPullRequestFilesHandler(mux *http.ServeMux, number int, files string) {
+	mux.HandleFunc(fmt.Sprintf("/repos/%v/%v/pulls/%d/files", testGitHubOwner, testGitHubRepo, number), func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, files)
+	})
+}
+
+func setCreateReviewHandler(mux *http.ServeMux, number int, state string) {
+	mux.HandleFunc(fmt.Sprintf("/repos/%v/%v/pulls/%d/reviews", testGitHubOwner, testGitHubRepo, number), func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, fmt.Sprintf(`{"state":"%s"}`, state))
+	})
+}
+
+func setReleaseHandler(mux *http.ServeMux, tag string) {
+	mux.HandleFunc(fmt.Sprintf("/repos/%s/%s/releases/latest", testGitHubOwner, testGitHubRepo), func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, `{"tag_name":"%s"}`, tag)
+	})
+}
+
+func setGetContentHandler(mux *http.ServeMux, version string) {
+	path := fmt.Sprintf("lib/%s/version.rb", testGitHubRepo)
+	content := fmt.Sprintf(`
+module BumpReviewer
+  VERSION="%s"
+end
+`, version)
+
+	mux.HandleFunc(fmt.Sprintf("/repos/%s/%s/contents/%s", testGitHubOwner, testGitHubRepo, path), func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, `{"content":"%s","encoding":"base64"}`, base64.StdEncoding.EncodeToString([]byte(content)))
+	})
 }

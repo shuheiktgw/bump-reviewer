@@ -64,7 +64,7 @@ func (r *Reviewer) reviewFile(number int) error {
 
 	filename := fmt.Sprintf("lib/%s/version.rb", r.Repo)
 	if *files[0].Filename != filename {
-		return &reviewError{Message: fmt.Sprintf("Pull Request #%d edited edited unexpected file, bump-reviewer only allows to edit %s.", number, filename)}
+		return &reviewError{Message: fmt.Sprintf("Pull Request #%d edited unexpected file, bump-reviewer only allows to edit %s.", number, filename)}
 	}
 
 	return nil
