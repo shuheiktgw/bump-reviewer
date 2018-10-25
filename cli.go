@@ -107,8 +107,10 @@ var usage = `Usage: bump-reviewer [options...]
 bump-reviewer is a command to review and approve bump up Pull Requests
 
 OPTIONS:
-  --number value, -n value  specifies the number of last lines of file (default 10)
-  --quiet, -q               suppresses printing of headers when multiple files are being examined
+  --owner value, -o value   specifies GitHub Owner
+  --repo value, -r value    specifies GitHub Repository Name
+  --token value, -v value   specifies GitHub Personal Access Token
+  --number value, -n value  specifies GitHub Pull Request Number to review
   --version, -v             prints the current version
   --help, -h                prints help
 
