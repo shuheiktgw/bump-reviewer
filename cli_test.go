@@ -43,7 +43,7 @@ func TestCLI_Run(t *testing.T) {
 			expectedOutStream: "",
 			expectedErrStream: "bump-reviewer failed to review because of the following error.\n\n" +
 				"GET https://api.github.com/repos/shuheiktgw/bump-reviewer/pulls/1/files: 401 Bad credentials []\n\n" +
-				"You might encounter a bug with bump-reviewer, so please report it to https://github.com/shuheiktgw/bump-reviewer/issues\n\n",
+				"You might encounter a bug with bump-reviewer, and if so, please report it to https://github.com/shuheiktgw/bump-reviewer/issues\n\n",
 			expectedExitCode: ExitCodeError,
 		},
 		{
