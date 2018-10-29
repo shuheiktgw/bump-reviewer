@@ -1,8 +1,8 @@
 version: 2
 jobs:
-  build:
+  test:
     docker:
-    - image: circleci/golang:1.11.1
+    - image: circleci/golang:latest
 
     working_directory: /go/src/github.com/shuheiktgw/bump-reviewer
     steps:
@@ -10,3 +10,27 @@ jobs:
 
     - run: dep ensure
     - run: go test -v ./...
+
+  build:
+    docker:
+    - image: circleci/golang:latest
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+
+      - run: docker build -t shuheiktgw/bump-reviewer:latest .
+      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run: docker push shuheiktgw/bump-reviewer:latest
+
+workflows:
+  version: 2
+  test_and_build:
+    jobs:
+    - test
+    - build:
+        requires:
+        - test
+        filters:
+          branches:
+            only: master
