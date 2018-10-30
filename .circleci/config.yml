@@ -34,3 +34,16 @@ workflows:
         filters:
           branches:
             only: master
+  scheduled_build:
+    triggers:
+    - schedule:
+        cron: "0 8 10 * *"
+        filters:
+          branches:
+            only:
+            - master
+    jobs:
+    - test
+    - build:
+        requires:
+        - test
