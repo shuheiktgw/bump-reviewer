@@ -15,13 +15,36 @@ jobs:
     docker:
     - image: circleci/golang:latest
     steps:
-      - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
+    - checkout
+    - setup_remote_docker:
+        docker_layer_caching: true
 
-      - run: docker build -t shuheiktgw/bump-reviewer:latest .
-      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
-      - run: docker push shuheiktgw/bump-reviewer:latest
+    - run: docker build -t shuheiktgw/bump-reviewer:latest .
+    - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+    - run: docker push shuheiktgw/bump-reviewer:latest
+
+  release:
+    docker:
+    - image: circleci/golang:latest
+
+    working_directory: /go/src/github.com/shuheiktgw/bump-reviewer
+    steps:
+    - checkout
+
+    - run: dep ensure
+    - run:
+        name: Install dependencies
+        command: |
+          go get github.com/Songmu/goxz/cmd/goxz
+          go get github.com/tcnksm/ghr
+    - run:
+        name: Release bump-reviewer
+        command: |
+          pwd
+          VERSION=`grep 'Version =' version.go | sed -E 's/.*"(.+)"$$/\1/'`
+          FILES=./pkg/dist/v${VERSION}
+          goxz -pv=v${VERSION} -arch=386,amd64 -d=${FILES}
+          ghr -t ${GITHUB_TOKEN} --soft v${VERSION} ${FILES}
 
 workflows:
   version: 2
@@ -29,6 +52,12 @@ workflows:
     jobs:
     - test
     - build:
+        requires:
+        - test
+        filters:
+          branches:
+            only: master
+    - release:
         requires:
         - test
         filters:
